@@ -1,3 +1,5 @@
+import 'package:cleanify/firebase_methods/auth_methods.dart';
+import 'package:cleanify/pages/signuplogin.dart';
 import 'package:flutter/material.dart';
 import '../../elements/project_elements.dart';
 
@@ -35,7 +37,11 @@ class _AccountPageState extends State<AccountPage> {
               subject: "Log out",
               myIcon: const Icon(Icons.logout),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+                Auth().logOut();
               }),
           MyListTile(
               subject: "Delete account",

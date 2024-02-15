@@ -1,7 +1,9 @@
+import 'package:cleanify/firebase_methods/auth_methods.dart';
 import 'package:cleanify/pages/signuplogin.dart';
+import 'package:cleanify/pages/tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'firebase_methods/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +29,26 @@ class MyApp extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(15)))),
           bottomAppBarTheme:
               const BottomAppBarTheme(shape: CircularNotchedRectangle())),
-      home: LoginScreen(),
+      home: StreamBuilder(
+          stream: Auth().authStateChanges,
+          builder: ((context, snapshot) {
+            if (snapshot.hasData) {
+              return const MainTabBar();
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              );
+            }
+            return const LoginScreen();
+          })),
     );
   }
 }
