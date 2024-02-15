@@ -1,6 +1,8 @@
 import 'package:cleanify/elements/project_elements.dart';
 import 'package:cleanify/pages/tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -10,6 +12,10 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController email = TextEditingController();
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
+  final TextEditingController password2 = TextEditingController();
   bool pageState = true;
   @override
   Widget build(BuildContext context) {
@@ -18,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
           ),
-          backgroundColor: ProjectColors.projectPrimaryWidgetColor,
+          backgroundColor: const Color.fromARGB(255, 78, 117, 97),
           leading: null,
           title: const Center(child: Text("Cleanify")),
         ),
@@ -156,9 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   fontSize: 20, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 20),
                           TextField(
-                              onChanged: (value) {
-                                setState(() {});
-                              },
+                              controller: email,
                               maxLines: 1,
                               decoration: const InputDecoration(
                                   isDense: true,
@@ -167,9 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   border: OutlineInputBorder())),
                           const SizedBox(height: 20),
                           TextField(
-                              onChanged: (value) {
-                                setState(() {});
-                              },
+                              controller: username,
                               maxLines: 1,
                               decoration: const InputDecoration(
                                   isDense: true,
@@ -178,10 +180,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   border: OutlineInputBorder())),
                           const SizedBox(height: 20),
                           TextField(
+                              controller: password,
                               maxLength: 20,
-                              onChanged: (value) {
-                                setState(() {});
-                              },
                               maxLines: 1,
                               decoration: const InputDecoration(
                                   isDense: true,
@@ -190,10 +190,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   border: OutlineInputBorder())),
                           const SizedBox(height: 20),
                           TextField(
+                              controller: password2,
                               maxLength: 20,
-                              onChanged: (value) {
-                                setState(() {});
-                              },
                               maxLines: 1,
                               decoration: const InputDecoration(
                                   isDense: true,
@@ -203,6 +201,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 5),
                           ElevatedButton(
                               onPressed: () {
+                                signUp(
+                                    email: email.text,
+                                    password: password.text,
+                                    username: username.text);
                                 setState(() {
                                   pageState = !pageState;
                                 });
@@ -277,5 +279,64 @@ class _LoginScreenState extends State<LoginScreen> {
                                             .styleListViewGeneral))
                               ])
                         ]))));
+  }
+}
+
+Future<String> signUp(
+    {required String email,
+    required String password,
+    required String username,
+    String res = "Some error occured"}) async {
+  try {
+    if (email.isNotEmpty && password.isNotEmpty) {
+      UserCredential cred = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      AppUser user = AppUser(
+          email: email,
+          password: password,
+          username: username,
+          uid: cred.user!.uid);
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(cred.user!.uid)
+          .set(user.toJson());
+      res = "Success";
+      return res;
+    }
+  } catch (error) {
+    res = error.toString();
+    return res;
+  }
+  return res;
+}
+
+class AppUser {
+  final String email;
+  final String password;
+  final String username;
+  final String uid;
+
+  AppUser({
+    required this.email,
+    required this.password,
+    required this.username,
+    required this.uid,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'email': email,
+        'password': password,
+        'username': username,
+        'uid': uid,
+      };
+
+  static AppUser fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+    return AppUser(
+      email: snapshot['email'],
+      password: snapshot['password'],
+      username: snapshot['username'],
+      uid: snapshot['uid'],
+    );
   }
 }
