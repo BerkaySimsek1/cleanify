@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../elements/project_elements.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -38,7 +37,7 @@ class MapPageState extends State<MapPage> {
               onMapCreated: (GoogleMapController controller) {
                 _controller.complete(controller);
               },
-              markers: {}),
+              markers: const {}),
           floatingActionButton: FloatingActionButton.extended(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               onPressed: _goToThePollution,
