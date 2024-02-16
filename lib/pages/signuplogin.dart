@@ -1,5 +1,6 @@
 import 'package:cleanify/elements/project_elements.dart';
 import 'package:cleanify/firebase_methods/auth_methods.dart';
+import 'package:cleanify/pages/signupeditprofile.dart';
 import 'package:cleanify/pages/tabbar.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
           ),
-          backgroundColor: const Color.fromARGB(255, 78, 117, 97),
+          backgroundColor: ProjectColors.projectPrimaryWidgetColor,
           leading: null,
           title: const Center(child: Text("Cleanify")),
         ),
@@ -54,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 20),
                           TextField(
                               controller: email,
+                              keyboardType: TextInputType.emailAddress,
                               maxLines: 1,
                               decoration: const InputDecoration(
                                   isDense: true,
@@ -65,6 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: password,
                               maxLength: 20,
                               maxLines: 1,
+                              obscureText: true,
                               decoration: const InputDecoration(
                                   isDense: true,
                                   hintText: 'Enter your password',
@@ -95,10 +98,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                 });
                               },
-                              child: const Text(
-                                'Login',
-                                style: ProjectTextStyles.styleListViewGeneral,
-                              )),
+                              child: const Text('Login',
+                                  style:
+                                      ProjectTextStyles.styleListViewGeneral)),
                           const SizedBox(height: 20),
                           const Row(children: [
                             Expanded(child: Divider(thickness: 2)),
@@ -180,6 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 20),
                           TextField(
                               controller: email,
+                              keyboardType: TextInputType.emailAddress,
                               maxLines: 1,
                               decoration: const InputDecoration(
                                   isDense: true,
@@ -200,6 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: password,
                               maxLength: 20,
                               maxLines: 1,
+                              obscureText: true,
                               decoration: const InputDecoration(
                                   isDense: true,
                                   labelText: "Password",
@@ -210,6 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: password2,
                               maxLength: 20,
                               maxLines: 1,
+                              obscureText: true,
                               decoration: const InputDecoration(
                                   isDense: true,
                                   labelText: "Confirm Password",
@@ -218,10 +223,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 5),
                           ElevatedButton(
                               onPressed: () {
-                                signUp(
-                                    email.text, password.text, username.text);
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return SignUpEditProfile();
+                                }));
+
+                                // signUp(
+                                //     email.text, password.text, username.text);
                                 setState(() {
-                                  pageState = !pageState;
+                                  //  pageState = !pageState;
                                   email.clear();
                                   password.clear();
                                 });

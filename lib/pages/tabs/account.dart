@@ -1,4 +1,5 @@
 import 'package:cleanify/firebase_methods/auth_methods.dart';
+import 'package:cleanify/pages/signupeditprofile.dart';
 import 'package:cleanify/pages/signuplogin.dart';
 import 'package:flutter/material.dart';
 import '../../elements/project_elements.dart';
@@ -11,28 +12,29 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  String username = "JohnDoe";
-  int age = 30;
-  String location = "New York";
-  int postCount = 15;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: ProjectColors.projectBackgroundColor,
         body: ListView(children: [
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: ProfileSection(
-                  username: username,
-                  age: age,
-                  location: location,
-                  postCount: postCount)),
+                  userName: "null",
+                  fullName: "null",
+                  age: "null",
+                  location: "null",
+                  postCount: 0)),
           const SizedBox(height: 10),
           MyListTile(
               subject: "Edit profile",
               myIcon: const Icon(Icons.edit),
-              onTap: () {}),
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignUpEditProfile()));
+              }),
           MyListTile(
               subject: "Log out",
               myIcon: const Icon(Icons.logout),
@@ -52,14 +54,16 @@ class _AccountPageState extends State<AccountPage> {
 }
 
 class ProfileSection extends StatelessWidget {
-  final String username;
-  final int age;
+  final String userName;
+  final String age;
   final String location;
   final int postCount;
+  final String fullName;
 
   const ProfileSection(
       {Key? key,
-      required this.username,
+      required this.userName,
+      required this.fullName,
       required this.age,
       required this.location,
       required this.postCount})
@@ -68,7 +72,7 @@ class ProfileSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 350,
+        height: 360,
         decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
             color: ProjectColors.projectPrimaryWidgetColor),
@@ -77,12 +81,15 @@ class ProfileSection extends StatelessWidget {
               // child: Image.asset('assets/user_avatar.png')
               ),
           const SizedBox(height: 20),
-          Text(username,
+          Text(userName,
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.bold)),
           const SizedBox(height: 10),
+          Text(fullName,
+              style: const TextStyle(color: Colors.white, fontSize: 15)),
+          const SizedBox(height: 5),
           Text('Age: $age',
               style: const TextStyle(color: Colors.white, fontSize: 15)),
           const SizedBox(height: 5),
