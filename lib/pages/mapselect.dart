@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapSelect extends StatefulWidget {
+  const MapSelect({super.key});
+
   @override
   State<MapSelect> createState() => _MapSelectState();
 }
 
 class _MapSelectState extends State<MapSelect> {
-  Set<Marker> markers = {}; // Marker setini tanımlıyoruz
-
+  Set<Marker> markers = {};
   static const CameraPosition _kMain =
       CameraPosition(target: LatLng(39.93327778, 32.85980556), zoom: 14);
 
@@ -19,15 +20,14 @@ class _MapSelectState extends State<MapSelect> {
     return Scaffold(
         appBar: const CommonAppbar(preference: "back"),
         body: GoogleMap(
-          initialCameraPosition: _kMain,
-          onTap: (location) {
-            setState(() {
-              // Yeni marker eklemek için setState kullanıyoruz
-              markers.add(createMarker("newPollution", location, "pollution"));
-            });
-          },
-          markers: markers, // Haritada gösterilecek marker'ları belirtiyoruz
-        ),
+            initialCameraPosition: _kMain,
+            onTap: (location) {
+              setState(() {
+                markers
+                    .add(createMarker("newPollution", location, "Pollution"));
+              });
+            },
+            markers: markers),
         floatingActionButton: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 130),
             child: FilledButton(
@@ -46,4 +46,11 @@ class _MapSelectState extends State<MapSelect> {
         position: position,
         infoWindow: InfoWindow(title: title));
   }
+
+  // void deneme(String id, LatLng position, String title) {
+  //   markers.add(Marker(
+  //       markerId: MarkerId(id), // adding multiple markers in one selectio
+  //       position: position,
+  //       infoWindow: InfoWindow(title: title)));
+  // }
 }
