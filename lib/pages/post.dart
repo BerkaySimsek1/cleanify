@@ -115,7 +115,7 @@ class _PostPageState extends State<PostPage> {
                                           .push(MaterialPageRoute(
                                               builder: (context) =>
                                                   MapSelect()));
-                                      if (result != null && result) {
+                                      if (result != null) {
                                         setState(() {
                                           mapSelected = true;
                                         });

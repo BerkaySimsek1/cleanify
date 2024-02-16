@@ -45,7 +45,7 @@ class _MainTabBarState extends State<MainTabBar> with TickerProviderStateMixin {
             bottomNavigationBar: BottomAppBar(
                 notchMargin: 10,
                 child: TabBar(
-                    labelColor: ProjectColors.projectPrimaryWidgetColor,
+                    labelColor: ProjectColors.optionalTextColor2,
                     unselectedLabelColor:
                         ProjectColors.projectSecondaryWidgetColor,
                     onTap: (int index) {
@@ -99,7 +99,7 @@ class CommonAppbar extends StatelessWidget implements PreferredSizeWidget {
         leading: IconButton(
             onPressed: () {
               if (preference == "back") {
-                Navigator.of(context).pop(false);
+                Navigator.of(context).pop(null);
               }
             },
             icon: preference == "back"
