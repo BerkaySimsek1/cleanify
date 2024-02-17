@@ -12,6 +12,7 @@ class PostMapView extends StatefulWidget {
   State<PostMapView> createState() => _PostMapViewState();
 }
 
+//aim to view one marker(defined by user)
 class _PostMapViewState extends State<PostMapView> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
