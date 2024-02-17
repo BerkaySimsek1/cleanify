@@ -20,10 +20,10 @@ class _AccountPageState extends State<AccountPage> {
           const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               child: ProfileSection(
-                  userName: "null",
-                  fullName: "null",
-                  age: "null",
-                  location: "null",
+                  userName: "username",
+                  fullName: "Full Name",
+                  age: "Age",
+                  location: "Location",
                   postCount: 0)),
           const SizedBox(height: 10),
           MyListTile(
@@ -77,9 +77,10 @@ class ProfileSection extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(20)),
             color: ProjectColors.projectPrimaryWidgetColor),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const CircleAvatar(radius: 90, backgroundColor: Colors.white
-              // child: Image.asset('assets/user_avatar.png')
-              ),
+          const CircleAvatar(
+              radius: 90,
+              backgroundColor: Colors.white,
+              backgroundImage: AssetImage("assets/profilepicture.jpg")),
           const SizedBox(height: 20),
           Text(userName,
               style: const TextStyle(
@@ -96,7 +97,7 @@ class ProfileSection extends StatelessWidget {
           Text('Location: $location',
               style: const TextStyle(color: Colors.white, fontSize: 15)),
           const SizedBox(height: 5),
-          Text('Amount of posts: $postCount',
+          Text('Posts: $postCount',
               style: const TextStyle(color: Colors.white, fontSize: 15))
         ]));
   }

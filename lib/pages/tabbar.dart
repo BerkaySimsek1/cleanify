@@ -29,17 +29,8 @@ class _MainTabBarState extends State<MainTabBar> with TickerProviderStateMixin {
         length: 3,
         child: Scaffold(
             appBar: const CommonAppbar(preference: "menu"),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return const PostPage();
-                }));
-              },
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              child: const Icon(Icons.add),
-            ),
             body: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: tabController,
                 children: const [MyHomePage(), MapPage(), AccountPage()]),
             bottomNavigationBar: BottomAppBar(
@@ -52,21 +43,21 @@ class _MainTabBarState extends State<MainTabBar> with TickerProviderStateMixin {
                       setState(() {
                         currentTabIndex = index;
                       });
-
                       switch (currentTabIndex) {
                         case 0:
-                          print("Currently in Home tab");
+                          debugPrint("Currently in Home tab");
                           break;
                         case 1:
-                          print("Currently in Map tab");
+                          debugPrint("Currently in Map tab");
                           break;
                         case 2:
-                          print("Currently in Account tab");
+                          debugPrint("Currently in Account tab");
                           break;
                         default:
-                          print("Unknown tab");
+                          debugPrint("Unknown tab");
                       }
                     },
+                    physics: const NeverScrollableScrollPhysics(),
                     isScrollable: false,
                     indicatorColor: ProjectColors.projectDefaultColor,
                     controller: tabController,
