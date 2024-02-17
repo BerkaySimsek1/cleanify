@@ -1,4 +1,5 @@
 import 'package:cleanify/pages/post.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../elements/project_elements.dart';
 
@@ -21,97 +22,133 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         padding: const EdgeInsets.only(top: 3.0),
         child: Scaffold(
             backgroundColor: ProjectColors.projectBackgroundColor,
-            body: ListView.separated(
-                scrollDirection: Axis.vertical,
-                itemBuilder: ((context, index) {
-                  debugPrint(index.toString());
-                  return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(15)),
-                              shape: BoxShape.rectangle,
-                              border: Border.all(
-                                  width: 3,
-                                  color: ProjectColors.imageBorderColor)),
-                          height: 450,
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Row(children: [
-                                      CircleAvatar(
-                                          radius: 20,
-                                          backgroundImage: AssetImage(
-                                              'assets/profilepicture.jpg')),
-                                      SizedBox(width: 10),
-                                      Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text('Full Name',
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16)),
-                                                Text('username',
+            body: StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection("posts").snapshots(),
+                builder: ((context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.docs.isEmpty) {
+                      return const Center(
+                        child: Text("There are no posts yet"),
+                      );
+                    } else {
+                      return ListView(
+                          scrollDirection: Axis.vertical,
+                          children: snapshot.data!.docs.map((posts) {
+                            return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(15)),
+                                        shape: BoxShape.rectangle,
+                                        border: Border.all(
+                                            width: 3,
+                                            color: ProjectColors
+                                                .imageBorderColor)),
+                                    height: 450,
+                                    child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(children: [
+                                                CircleAvatar(
+                                                    radius: 20,
+                                                    backgroundImage:
+                                                        NetworkImage(posts[
+                                                                'profilePhoto']
+                                                            .toString())),
+                                                const SizedBox(width: 10),
+                                                Expanded(
+                                                    flex: 3,
+                                                    child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                              posts["fullName"]
+                                                                  .toString(),
+                                                              style: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize:
+                                                                      16)),
+                                                          Text(
+                                                              posts["username"]
+                                                                  .toString(),
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .grey))
+                                                        ])),
+                                                const Spacer(),
+                                                Text('Date Posted',
                                                     style: TextStyle(
                                                         color: Colors.grey))
                                               ])),
-                                      Spacer(),
-                                      Text('Date Posted',
-                                          style: TextStyle(color: Colors.grey))
-                                    ])),
-                                const Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8),
-                                      child: Text('Description',
-                                          style: TextStyle(fontSize: 16))),
-                                ),
-                                Expanded(
-                                    flex: 5,
-                                    child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Container(
-                                            height: 300,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                        Radius.circular(5)),
-                                                shape: BoxShape.rectangle,
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color: ProjectColors
-                                                        .imageBorderColor)),
-                                            child: const Center(
-                                                child: Text('Media Asset'))))),
-                                const Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 8),
-                                      child: Row(children: [
-                                        Icon(Icons.location_on,
-                                            color: Colors.grey),
-                                        SizedBox(width: 5),
-                                        Text('Location',
-                                            style:
-                                                TextStyle(color: Colors.grey))
-                                      ])),
-                                )
-                              ])));
-                }),
-                separatorBuilder: (context, index) {
-                  return const Divider(color: Colors.white);
-                },
-                itemCount: 15),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8),
+                                                child: Text(
+                                                    posts["description"]
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                        fontSize: 16))),
+                                          ),
+                                          Expanded(
+                                              flex: 5,
+                                              child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(horizontal: 8),
+                                                  child: Container(
+                                                      height: 300,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(Radius
+                                                                      .circular(
+                                                                          5)),
+                                                          shape: BoxShape
+                                                              .rectangle,
+                                                          border: Border.all(
+                                                              width: 2,
+                                                              color: ProjectColors
+                                                                  .imageBorderColor)),
+                                                      child: Image.network(
+                                                        posts["pollutionPhoto"],
+                                                        fit: BoxFit.fill,
+                                                      )))),
+                                          const Expanded(
+                                            flex: 1,
+                                            child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8),
+                                                child: Row(children: [
+                                                  Icon(Icons.location_on,
+                                                      color: Colors.grey),
+                                                  SizedBox(width: 5),
+                                                  Text('Location',
+                                                      style: TextStyle(
+                                                          color: Colors.grey))
+                                                ])),
+                                          )
+                                        ])));
+                          }).toList());
+                    }
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                })),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.of(context)

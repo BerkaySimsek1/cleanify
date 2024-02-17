@@ -1,4 +1,3 @@
-import 'package:cleanify/pages/post.dart';
 import 'package:cleanify/pages/tabs/account.dart';
 import 'package:cleanify/pages/tabs/map.dart';
 import 'package:flutter/material.dart';
