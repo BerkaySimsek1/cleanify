@@ -1,5 +1,5 @@
 import 'package:cleanify/firebase_methods/auth_methods.dart';
-import 'package:cleanify/pages/signupeditprofile.dart';
+import 'package:cleanify/pages/accounteditprofile.dart';
 import 'package:cleanify/pages/signuplogin.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class _AccountPageState extends State<AccountPage> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const SignUpEditProfile()));
+                        builder: (context) => const AccountEditProfile()));
               }),
           MyListTile(
               subject: "Log out",
@@ -61,15 +61,11 @@ class ProfileSection extends StatelessWidget {
             .snapshots(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (!snapshot.hasData || snapshot.data!.data() == null) {
-            return Center(
-              child: Text('Kullanıcı bulunamadı.'),
-            );
+            return const Center(child: Text('User does not exist.'));
           }
 
           var userData = snapshot.data!.data() as Map<String, dynamic>;
@@ -102,13 +98,11 @@ class ProfileSection extends StatelessWidget {
                         style:
                             const TextStyle(color: Colors.white, fontSize: 15)),
                     const SizedBox(height: 5),
-                    Text('Location: Turkey',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 15)),
+                    const Text('Location: Turkey',
+                        style: TextStyle(color: Colors.white, fontSize: 15)),
                     const SizedBox(height: 5),
-                    Text('Posts: 5',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 15))
+                    const Text('Posts: 5',
+                        style: TextStyle(color: Colors.white, fontSize: 15))
                   ]));
         });
   }
