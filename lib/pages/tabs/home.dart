@@ -1,4 +1,5 @@
 import 'package:cleanify/pages/post.dart';
+import 'package:cleanify/pages/postmapview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -39,15 +40,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                           scrollDirection: Axis.vertical,
                           children: snapshot.data!.docs.map((posts) {
                             return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 2.5),
                                 child: Container(
                                     decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(15)),
                                         shape: BoxShape.rectangle,
                                         border: Border.all(
-                                            width: 3,
+                                            width: 2,
                                             color: ProjectColors
                                                 .imageBorderColor)),
                                     height: 450,
@@ -112,16 +113,16 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                           Expanded(
                                               flex: 5,
                                               child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(horizontal: 8),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 8),
                                                   child: Container(
                                                       height: 300,
                                                       decoration: BoxDecoration(
                                                           borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          5)),
+                                                              const BorderRadius.all(
+                                                                  Radius.circular(
+                                                                      5)),
                                                           shape: BoxShape
                                                               .rectangle,
                                                           border: Border.all(
@@ -129,23 +130,26 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                               color: ProjectColors
                                                                   .imageBorderColor)),
                                                       child: Image.network(
-                                                        posts["pollutionPhoto"],
-                                                        fit: BoxFit.fill,
-                                                      )))),
-                                          const Expanded(
-                                            flex: 1,
-                                            child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 8),
-                                                child: Row(children: [
-                                                  Icon(Icons.location_on,
-                                                      color: Colors.grey),
-                                                  SizedBox(width: 5),
-                                                  Text('Location',
-                                                      style: TextStyle(
-                                                          color: Colors.grey))
-                                                ])),
-                                          )
+                                                          posts["pollutionPhoto"],
+                                                          fit: BoxFit.fill)))),
+                                          SizedBox(
+                                              width: 120,
+                                              child: TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) {
+                                                      return const PostMapView();
+                                                    }));
+                                                  },
+                                                  child: const Row(children: [
+                                                    Icon(Icons.location_on,
+                                                        color: Colors.grey),
+                                                    SizedBox(width: 10),
+                                                    Text('Location',
+                                                        style: TextStyle(
+                                                            color: Colors.grey))
+                                                  ])))
                                         ])));
                           }).toList());
                     }
