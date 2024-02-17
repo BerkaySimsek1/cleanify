@@ -1,6 +1,7 @@
 import 'package:cleanify/pages/post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../../elements/project_elements.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -23,8 +24,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: Scaffold(
             backgroundColor: ProjectColors.projectBackgroundColor,
             body: StreamBuilder(
-                stream:
-                    FirebaseFirestore.instance.collection("posts").snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection("posts")
+                    .orderBy('date', descending: true)
+                    .snapshots(),
                 builder: ((context, snapshot) {
                   if (snapshot.hasData) {
                     if (snapshot.data!.docs.isEmpty) {
@@ -87,8 +90,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                       .grey))
                                                         ])),
                                                 const Spacer(),
-                                                Text('Date Posted',
-                                                    style: TextStyle(
+                                                Text(
+                                                    DateFormat('dd.MM.yyyy')
+                                                        .format((DateTime.parse(
+                                                            posts["date"]))),
+                                                    style: const TextStyle(
                                                         color: Colors.grey))
                                               ])),
                                           Expanded(

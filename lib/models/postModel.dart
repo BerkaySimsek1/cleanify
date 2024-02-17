@@ -5,7 +5,7 @@ class PostModel {
   final String username;
   final String profilePhoto;
   final String pollutionPhoto;
-  final DateTime date;
+  final String date;
   final String description;
   final double longtitude;
   final double altitude;

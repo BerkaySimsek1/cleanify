@@ -47,7 +47,7 @@ class firestoreMethods {
           username: username,
           profilePhoto: profilePhoto,
           pollutionPhoto: photo,
-          date: DateTime.now(),
+          date: DateTime.now().toString(),
           description: description,
           longtitude: longtitude,
           altitude: altitude);
