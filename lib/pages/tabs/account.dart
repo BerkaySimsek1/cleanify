@@ -1,6 +1,7 @@
 import 'package:cleanify/firebase_methods/auth_methods.dart';
 import 'package:cleanify/pages/signupeditprofile.dart';
 import 'package:cleanify/pages/signuplogin.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../elements/project_elements.dart';
 
@@ -19,12 +20,7 @@ class _AccountPageState extends State<AccountPage> {
         body: ListView(children: [
           const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: ProfileSection(
-                  userName: "username",
-                  fullName: "Full Name",
-                  age: "Age",
-                  location: "Location",
-                  postCount: 0)),
+              child: ProfileSection()),
           const SizedBox(height: 10),
           MyListTile(
               subject: "Edit profile",
@@ -54,52 +50,67 @@ class _AccountPageState extends State<AccountPage> {
 }
 
 class ProfileSection extends StatelessWidget {
-  final String userName;
-  final String age;
-  final String location;
-  final int postCount;
-  final String fullName;
-
-  const ProfileSection(
-      {Key? key,
-      required this.userName,
-      required this.fullName,
-      required this.age,
-      required this.location,
-      required this.postCount})
-      : super(key: key);
+  const ProfileSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 360,
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            color: ProjectColors.projectPrimaryWidgetColor),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const CircleAvatar(
-              radius: 90,
-              backgroundColor: Colors.white,
-              backgroundImage: AssetImage("assets/profilepicture.jpg")),
-          const SizedBox(height: 20),
-          Text(userName,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          Text(fullName,
-              style: const TextStyle(color: Colors.white, fontSize: 15)),
-          const SizedBox(height: 5),
-          Text('Age: $age',
-              style: const TextStyle(color: Colors.white, fontSize: 15)),
-          const SizedBox(height: 5),
-          Text('Location: $location',
-              style: const TextStyle(color: Colors.white, fontSize: 15)),
-          const SizedBox(height: 5),
-          Text('Posts: $postCount',
-              style: const TextStyle(color: Colors.white, fontSize: 15))
-        ]));
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(Auth().currentUser!.uid)
+            .snapshots(),
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (!snapshot.hasData || snapshot.data!.data() == null) {
+            return Center(
+              child: Text('Kullanıcı bulunamadı.'),
+            );
+          }
+
+          var userData = snapshot.data!.data() as Map<String, dynamic>;
+
+          return Container(
+              height: 360,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: ProjectColors.projectPrimaryWidgetColor),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                        radius: 90,
+                        backgroundColor: Colors.white,
+                        backgroundImage:
+                            NetworkImage(userData['profilePhoto'].toString())),
+                    const SizedBox(height: 20),
+                    Text(userData['username'],
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    Text(userData['name'],
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15)),
+                    const SizedBox(height: 5),
+                    Text('Age: ${userData['age']}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15)),
+                    const SizedBox(height: 5),
+                    Text('Location: Turkey',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15)),
+                    const SizedBox(height: 5),
+                    Text('Posts: 5',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15))
+                  ]));
+        });
   }
 }
 

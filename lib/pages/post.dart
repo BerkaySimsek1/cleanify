@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'package:cleanify/elements/project_elements.dart';
+import 'package:cleanify/firebase_methods/firestore_methods.dart';
 import 'package:cleanify/pages/mapselect.dart';
 import 'package:cleanify/pages/tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({Key? key}) : super(key: key);
@@ -16,7 +20,18 @@ class _PostPageState extends State<PostPage> {
   bool mediaRemains = false;
   bool mapSelected = false;
   String description = "";
+  late firebase_storage.UploadTask uploadTask;
   File? _selectedImage;
+  double longtitude = 0;
+  double latitude = 0;
+
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  final ImagePicker _picker = ImagePicker();
+  late String photoPath = defaultPhoto;
+  String defaultPhoto =
+      'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg';
+  int count = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,7 +100,7 @@ class _PostPageState extends State<PostPage> {
                                                             onTap: () {
                                                               mediaRemains =
                                                                   true;
-                                                              _pickImageFromGallery();
+                                                              imgFromGallery();
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
@@ -96,7 +111,7 @@ class _PostPageState extends State<PostPage> {
                                                                 style: ProjectTextStyles
                                                                     .styleListViewGeneral),
                                                             onTap: () {
-                                                              _pickImageFromCamera();
+                                                              imgFromCamera();
                                                               Navigator.of(
                                                                       context)
                                                                   .pop();
@@ -113,12 +128,14 @@ class _PostPageState extends State<PostPage> {
                                   flex: 3,
                                   child: IconButton(
                                       onPressed: () async {
-                                        final result =
+                                        LatLng? result =
                                             await Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         const MapSelect()));
                                         if (result != null) {
+                                          longtitude = result.longitude;
+                                          latitude = result.latitude;
                                           setState(() {
                                             mapSelected = true;
                                           });
@@ -127,8 +144,6 @@ class _PostPageState extends State<PostPage> {
                                             mapSelected = false;
                                           });
                                         }
-                                        debugPrint(
-                                            "mapSelected value is: $result");
                                       },
                                       color: mapSelected
                                           ? Colors.green
@@ -144,6 +159,12 @@ class _PostPageState extends State<PostPage> {
                                             mediaRemains &&
                                             mapSelected) {
                                           //save description, media and location to database
+                                          firestoreMethods()
+                                              .validateAndSubmitPost(
+                                                  description,
+                                                  photoPath,
+                                                  longtitude,
+                                                  latitude);
                                           Navigator.of(context).pop();
                                         } else {}
                                       },
@@ -208,22 +229,46 @@ class _PostPageState extends State<PostPage> {
                 })));
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (returnedImage == null) return;
-    setState(() {
-      _selectedImage = File(returnedImage.path);
-    });
+  Future uploadFile() async {
+    if (_selectedImage == null) return;
+    final fileName = basename(_selectedImage!.path);
+    final destination = 'files/$fileName';
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('/post');
+      uploadTask = ref.putData(await _selectedImage!.readAsBytes());
+      photoPath = await (await uploadTask).ref.getDownloadURL();
+
+      setState(() {});
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
-  Future _pickImageFromCamera() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-    if (returnedImage == null) return;
-    setState(() {
-      _selectedImage = File(returnedImage.path);
-      _selectedImage == null ? mediaRemains = false : mediaRemains = true;
-    });
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      _selectedImage = File(pickedFile.path);
+      Future.delayed(Duration(microseconds: 1));
+      setState(() {});
+      uploadFile();
+    } else {
+      print('No image selected');
+    }
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      _selectedImage = File(pickedFile.path);
+      Future.delayed(Duration(microseconds: 1));
+      setState(() {});
+      uploadFile();
+    } else {
+      print('No image selected');
+    }
   }
 }

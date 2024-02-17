@@ -28,7 +28,11 @@ class Auth {
             email: email,
             password: password,
             username: username,
-            uid: cred.user!.uid);
+            uid: cred.user!.uid,
+            profilePhoto:
+                'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg',
+            name: "default",
+            age: "default");
         await _firestore
             .collection("users")
             .doc(cred.user!.uid)

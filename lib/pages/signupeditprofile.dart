@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:cleanify/firebase_methods/firestore_methods.dart';
 import 'package:cleanify/pages/tabbar.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../elements/project_elements.dart';
+import 'package:path/path.dart';
 
 class SignUpEditProfile extends StatefulWidget {
   const SignUpEditProfile({super.key});
@@ -17,7 +20,59 @@ class _EditProfileState extends State<SignUpEditProfile> {
   final TextEditingController age = TextEditingController();
   bool fullNameRemains = false;
   bool ageRemains = false;
+  late firebase_storage.UploadTask uploadTask;
   File? _selectedImage;
+
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  final ImagePicker _picker = ImagePicker();
+  late String photoPath = defaultPhoto;
+  String defaultPhoto =
+      'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg';
+  int count = 0;
+  Future uploadFile() async {
+    if (_selectedImage == null) return;
+    final fileName = basename(_selectedImage!.path);
+    final destination = 'files/$fileName';
+    try {
+      final ref = firebase_storage.FirebaseStorage.instance
+          .ref(destination)
+          .child('/file');
+      uploadTask = ref.putData(await _selectedImage!.readAsBytes());
+      photoPath = await (await uploadTask).ref.getDownloadURL();
+      firestoreMethods().updateProfilePhoto(photoPath);
+
+      setState(() {});
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      _selectedImage = File(pickedFile.path);
+      Future.delayed(Duration(microseconds: 1));
+      setState(() {});
+      uploadFile();
+    } else {
+      print('No image selected');
+    }
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      _selectedImage = File(pickedFile.path);
+      Future.delayed(Duration(microseconds: 1));
+      setState(() {});
+      uploadFile();
+    } else {
+      print('No image selected');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +94,7 @@ class _EditProfileState extends State<SignUpEditProfile> {
                           child: _selectedImage != null
                               ? Image.file(_selectedImage!,
                                   fit: BoxFit.fitHeight)
-                              : Image.asset("assets/profilepicture.jpg",
+                              : Image.network(defaultPhoto,
                                   fit: BoxFit.fitHeight)),
                       const SizedBox(height: 20),
                       ElevatedButton(
@@ -58,7 +113,8 @@ class _EditProfileState extends State<SignUpEditProfile> {
                                                     style: ProjectTextStyles
                                                         .styleListViewGeneral),
                                                 onTap: () {
-                                                  _pickImageFromGallery();
+                                                  imgFromGallery();
+                                                  setState(() {});
                                                   Navigator.of(context).pop();
                                                 }),
                                             ListTile(
@@ -66,7 +122,8 @@ class _EditProfileState extends State<SignUpEditProfile> {
                                                     style: ProjectTextStyles
                                                         .styleListViewGeneral),
                                                 onTap: () {
-                                                  _pickImageFromCamera();
+                                                  imgFromCamera();
+                                                  setState(() {});
                                                   Navigator.of(context).pop();
                                                 })
                                           ]));
@@ -96,6 +153,8 @@ class _EditProfileState extends State<SignUpEditProfile> {
                       const SizedBox(height: 20),
                       ElevatedButton(
                           onPressed: () {
+                            firestoreMethods()
+                                .updateUserData(fullName.text, age.text);
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(builder: (context) {
                               return const MainTabBar();
@@ -104,23 +163,5 @@ class _EditProfileState extends State<SignUpEditProfile> {
                           child: const Text("Continue",
                               style: ProjectTextStyles.styleListViewGeneral))
                     ]))));
-  }
-
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (returnedImage == null) return;
-    setState(() {
-      _selectedImage = File(returnedImage.path);
-    });
-  }
-
-  Future _pickImageFromCamera() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.camera);
-    if (returnedImage == null) return;
-    setState(() {
-      _selectedImage = File(returnedImage.path);
-    });
   }
 }

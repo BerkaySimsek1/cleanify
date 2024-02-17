@@ -228,10 +228,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   return const SignUpEditProfile();
                                 }));
 
-                                // signUp(
-                                //     email.text, password.text, username.text);
+                                signUp(
+                                    email.text, password.text, username.text);
                                 setState(() {
-                                  //  pageState = !pageState;
+                                  pageState = !pageState;
                                   email.clear();
                                   password.clear();
                                 });
