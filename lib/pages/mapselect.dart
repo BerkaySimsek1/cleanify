@@ -34,7 +34,9 @@ class _MapSelectState extends State<MapSelect> {
                 style: FilledButton.styleFrom(
                     backgroundColor: ProjectColors.projectPrimaryWidgetColor),
                 onPressed: () {
-                  markers.isNotEmpty ? Navigator.of(context).pop(markers) : ();
+                  markers.isNotEmpty
+                      ? Navigator.of(context).pop(markers.elementAt(0).position)
+                      : ();
                 },
                 child: const Text('Select Map',
                     style: ProjectTextStyles.styleDrawerTextLine))));
@@ -42,9 +44,14 @@ class _MapSelectState extends State<MapSelect> {
 
   Marker createMarker(String id, LatLng position, String title) {
     return Marker(
+        draggable: true,
         markerId: MarkerId(id),
         position: position,
-        infoWindow: InfoWindow(title: title));
+        infoWindow: InfoWindow(title: title),
+        onDragEnd: ((LatLng newPosition) {
+          debugPrint(newPosition.latitude.toString());
+          debugPrint(newPosition.longitude.toString());
+        }));
   }
 
   // void deneme(String id, LatLng position, String title) {

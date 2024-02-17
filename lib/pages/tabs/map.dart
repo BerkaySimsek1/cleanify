@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cleanify/elements/project_elements.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -29,15 +30,22 @@ class MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(5),
       child: Scaffold(
-          body: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: (GoogleMapController controller) {
-                _controller.complete(controller);
-              },
-              markers: const {}),
+          body: Container(
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(15)),
+                shape: BoxShape.rectangle,
+                border: Border.all(
+                    width: 3, color: ProjectColors.imageBorderColor)),
+            child: GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
+                markers: const {}),
+          ),
           floatingActionButton: FloatingActionButton.extended(
               backgroundColor: Theme.of(context).colorScheme.inversePrimary,
               onPressed: _goToThePollution,
