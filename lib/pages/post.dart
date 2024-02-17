@@ -66,8 +66,8 @@ class _PostPageState extends State<PostPage> {
                             onChanged: (value) {
                               setState(() {
                                 description = value;
-                                debugPrint("description is: $description");
                               });
+                              debugPrint("description is: $description");
                             },
                             maxLines: 7,
                             decoration: const InputDecoration(
@@ -244,7 +244,7 @@ class _PostPageState extends State<PostPage> {
 
       setState(() {});
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -253,11 +253,11 @@ class _PostPageState extends State<PostPage> {
 
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
-      Future.delayed(Duration(microseconds: 1));
+      Future.delayed(const Duration(microseconds: 1));
       setState(() {});
       uploadFile();
     } else {
-      print('No image selected');
+      debugPrint('No image selected');
     }
   }
 
@@ -266,11 +266,11 @@ class _PostPageState extends State<PostPage> {
 
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
-      Future.delayed(Duration(microseconds: 1));
+      Future.delayed(const Duration(microseconds: 1));
       setState(() {});
       uploadFile();
     } else {
-      print('No image selected');
+      debugPrint('No image selected');
     }
   }
 }
