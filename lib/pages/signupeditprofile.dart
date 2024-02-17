@@ -18,8 +18,7 @@ class _EditProfileState extends State<SignUpEditProfile> {
   bool fullNameRemains = false;
   bool ageRemains = false;
   File? _selectedImage;
-  String defaultPhoto =
-      'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,12 +34,12 @@ class _EditProfileState extends State<SignUpEditProfile> {
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 20),
-                      Container(
+                      SizedBox(
                           height: 150,
                           child: _selectedImage != null
                               ? Image.file(_selectedImage!,
                                   fit: BoxFit.fitHeight)
-                              : Image.network(defaultPhoto,
+                              : Image.asset("assets/profilepicture.jpg",
                                   fit: BoxFit.fitHeight)),
                       const SizedBox(height: 20),
                       ElevatedButton(

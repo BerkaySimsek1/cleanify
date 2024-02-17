@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onPressed: () {
                                       setState(() {
                                         pageState = !pageState;
-                                        print(pageState);
+                                        debugPrint(pageState.toString());
                                       });
                                     },
                                     child: const Text('Sign Up',
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return SignUpEditProfile();
+                                  return const SignUpEditProfile();
                                 }));
 
                                 // signUp(
@@ -298,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     onPressed: () {
                                       setState(() {
                                         pageState = !pageState;
-                                        print(pageState);
+                                        debugPrint(pageState.toString());
                                       });
                                     },
                                     child: const Text('Login',
