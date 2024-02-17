@@ -39,7 +39,6 @@ class MyApp extends StatelessWidget {
                 child: Text(snapshot.error.toString()),
               );
             }
-
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(

@@ -111,6 +111,8 @@ class _PostPageState extends State<PostPage> {
                                                                 style: ProjectTextStyles
                                                                     .styleListViewGeneral),
                                                             onTap: () {
+                                                              mediaRemains =
+                                                                  true;
                                                               imgFromCamera();
                                                               Navigator.of(
                                                                       context)
