@@ -86,15 +86,13 @@ class CommonAppbar extends StatelessWidget implements PreferredSizeWidget {
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
         backgroundColor: ProjectColors.projectPrimaryWidgetColor,
-        leading: IconButton(
-            onPressed: () {
-              if (preference == "back") {
-                Navigator.of(context).pop(null);
-              }
-            },
-            icon: preference == "back"
-                ? const Icon(Icons.arrow_back)
-                : const Icon(Icons.menu)),
+        leading: ((preference == "back"))
+            ? IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop(null);
+                },
+                icon: const Icon(Icons.arrow_back))
+            : const SizedBox(),
         title: const Center(child: Text("Cleanify")),
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.settings))

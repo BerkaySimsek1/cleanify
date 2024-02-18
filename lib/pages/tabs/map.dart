@@ -80,8 +80,8 @@ class MapPageState extends State<MapPage> {
             bottomNavigationBar: FloatingActionButton.extended(
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 onPressed: _goToThePollution,
-                label: const Text('To the pollution'),
-                icon: const Icon(Icons.directions_boat))));
+                label: const Text('Navigate between pollutions'),
+                icon: const Icon(Icons.map_outlined))));
   }
 
   Future<void> _goToThePollution() async {

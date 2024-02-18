@@ -80,7 +80,7 @@ class _EditProfileState extends State<AccountEditProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: ProjectColors.projectBackgroundColor,
-        appBar: const CommonAppbar(preference: "back"),
+        appBar: const CommonAppbar(preference: "main"),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection('users')
@@ -175,8 +175,6 @@ class _EditProfileState extends State<AccountEditProfile> {
                             const SizedBox(height: 20),
                             ElevatedButton(
                                 onPressed: () {
-                                  FirestoreMethods()
-                                      .updateUserData(fullName.text, age.text);
                                   Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(builder: (context) {
                                     return const MainTabBar();

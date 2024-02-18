@@ -37,14 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          ),
-          backgroundColor: ProjectColors.projectPrimaryWidgetColor,
-          leading: null,
-          title: const Center(child: Text("Cleanify")),
-        ),
+        appBar: const CommonAppbar(preference: "main"),
         backgroundColor: ProjectColors.projectBackgroundColor,
         body: SingleChildScrollView(
             child: pageState

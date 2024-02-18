@@ -146,10 +146,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                                 builder:
                                                                     (context) {
                                                           return PostMapView(
-                                                              latitude: posts[
-                                                                  "altitude"],
-                                                              longtitude: posts[
-                                                                  "longtitude"]);
+                                                            latitude: posts[
+                                                                "altitude"],
+                                                            longtitude: posts[
+                                                                "longtitude"],
+                                                          );
                                                         }));
                                                       },
                                                       child:
