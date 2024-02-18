@@ -63,7 +63,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter_app_name:
-  name: "My Cool App"
+  name: "Cleanify"
 
 flutter_launcher_icons:
   android: "launcher_icon"
