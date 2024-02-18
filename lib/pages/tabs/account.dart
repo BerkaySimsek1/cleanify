@@ -44,7 +44,15 @@ class _AccountPageState extends State<AccountPage> {
           MyListTile(
               subject: "Delete account",
               myIcon: const Icon(Icons.delete),
-              onTap: () {})
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()));
+                Auth().deletePosts();
+                Auth().deleteUserInfo();
+                Auth().deleteAccount();
+              })
         ]));
   }
 }
@@ -101,8 +109,9 @@ class ProfileSection extends StatelessWidget {
                     const Text('Location: Turkey',
                         style: TextStyle(color: Colors.white, fontSize: 15)),
                     const SizedBox(height: 5),
-                    const Text('Posts: 5',
-                        style: TextStyle(color: Colors.white, fontSize: 15))
+                    Text('Posts: ${userData['count']}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 15))
                   ]));
         });
   }

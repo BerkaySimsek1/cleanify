@@ -17,7 +17,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController password = TextEditingController();
   final TextEditingController password2 = TextEditingController();
   bool isError = false;
-
+  String? usernameErrorMessage;
+  String? emailErrorMessage;
+  String? passwordErrorMessage;
+  bool isEmailTextFieldError = false;
+  bool isUsernameTextFieldError = false;
+  bool isPasswordTextFieldError = false;
   Future<void> signUp(String email, String password, String username) async {
     await Auth().signUp(email: email, password: password, username: username);
   }
@@ -184,31 +189,44 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: email,
                               keyboardType: TextInputType.emailAddress,
                               maxLines: 1,
-                              decoration: const InputDecoration(
+                              onChanged: _validateEmailTextField,
+                              decoration: InputDecoration(
                                   isDense: true,
                                   labelText: "E-mail",
                                   hintText: 'Enter your e-mail',
-                                  border: OutlineInputBorder())),
+                                  errorText: isEmailTextFieldError
+                                      ? emailErrorMessage
+                                      : null,
+                                  border: const OutlineInputBorder())),
                           const SizedBox(height: 20),
                           TextField(
-                              controller: username,
-                              maxLines: 1,
-                              decoration: const InputDecoration(
-                                  isDense: true,
-                                  labelText: "Username",
-                                  hintText: 'Enter your username',
-                                  border: OutlineInputBorder())),
+                            controller: username,
+                            maxLines: 1,
+                            onChanged: _validateUsernameTextField,
+                            decoration: InputDecoration(
+                                isDense: true,
+                                labelText: "Username",
+                                hintText: 'Enter your username',
+                                errorText: isUsernameTextFieldError
+                                    ? usernameErrorMessage
+                                    : null,
+                                border: const OutlineInputBorder()),
+                          ),
                           const SizedBox(height: 20),
                           TextField(
                               controller: password,
                               maxLength: 20,
                               maxLines: 1,
                               obscureText: true,
-                              decoration: const InputDecoration(
+                              onChanged: _validatePasswordTextFields,
+                              decoration: InputDecoration(
                                   isDense: true,
                                   labelText: "Password",
                                   hintText: 'Enter your password',
-                                  border: OutlineInputBorder())),
+                                  errorText: isPasswordTextFieldError
+                                      ? passwordErrorMessage
+                                      : null,
+                                  border: const OutlineInputBorder())),
                           const SizedBox(height: 20),
                           TextField(
                               controller: password2,
@@ -223,18 +241,34 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 5),
                           ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context)
-                                    .push(MaterialPageRoute(builder: (context) {
-                                  return const SignUpEditProfile();
-                                }));
+                                if (!isEmailTextFieldError &&
+                                    !isUsernameTextFieldError &&
+                                    !isPasswordTextFieldError) {
+                                  if (password.text == password2.text) {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (context) {
+                                      return const SignUpEditProfile();
+                                    }));
 
-                                signUp(
-                                    email.text, password.text, username.text);
-                                setState(() {
-                                  pageState = !pageState;
-                                  email.clear();
-                                  password.clear();
-                                });
+                                    signUp(email.text, password.text,
+                                        username.text);
+                                    setState(() {
+                                      pageState = !pageState;
+                                      email.clear();
+                                      password.clear();
+                                    });
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Passwords are not same. Please try again.")));
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Something went wrong. Please try again.")));
+                                }
                               },
                               child: const Text('Sign Up',
                                   style:
@@ -306,5 +340,41 @@ class _LoginScreenState extends State<LoginScreen> {
                                             .styleListViewGeneral))
                               ])
                         ]))));
+  }
+
+  void _validateEmailTextField(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        emailErrorMessage = 'This field cannot be empty';
+        isEmailTextFieldError = true;
+      } else {
+        isEmailTextFieldError = false;
+      }
+    });
+  }
+
+  void _validateUsernameTextField(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        usernameErrorMessage = 'This field cannot be empty';
+        isUsernameTextFieldError = true;
+      } else {
+        isUsernameTextFieldError = false;
+      }
+    });
+  }
+
+  void _validatePasswordTextFields(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        passwordErrorMessage = "This field cannot be empty";
+        isPasswordTextFieldError = true;
+      } else if (value.length < 5) {
+        passwordErrorMessage = "Password must be more than 5 characters";
+        isPasswordTextFieldError = true;
+      } else {
+        isPasswordTextFieldError = false;
+      }
+    });
   }
 }

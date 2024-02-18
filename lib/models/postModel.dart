@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostModel {
@@ -9,16 +11,19 @@ class PostModel {
   final String description;
   final double longtitude;
   final double altitude;
+  final String uid;
 
-  PostModel(
-      {required this.fullName,
-      required this.username,
-      required this.profilePhoto,
-      required this.pollutionPhoto,
-      required this.date,
-      required this.description,
-      required this.longtitude,
-      required this.altitude});
+  PostModel({
+    required this.fullName,
+    required this.username,
+    required this.profilePhoto,
+    required this.pollutionPhoto,
+    required this.date,
+    required this.description,
+    required this.longtitude,
+    required this.altitude,
+    required this.uid,
+  });
 
   Map<String, dynamic> toJson() => {
         'fullName': fullName,
@@ -29,6 +34,7 @@ class PostModel {
         'description': description,
         'longtitude': longtitude,
         'altitude': altitude,
+        'uid': uid,
       };
 
   static PostModel fromSnap(DocumentSnapshot snap) {
@@ -41,7 +47,8 @@ class PostModel {
         date: snapshot['date'],
         description: snapshot['description'],
         longtitude: snapshot['longtitude'],
-        altitude: snapshot['altitude']);
+        altitude: snapshot['altitude'],
+        uid: snapshot['uid']);
   }
 
   dynamic getDataMap() {
@@ -54,6 +61,7 @@ class PostModel {
       'description': description,
       'longtitude': longtitude,
       'altitude': altitude,
+      'uid': uid,
     };
   }
 }

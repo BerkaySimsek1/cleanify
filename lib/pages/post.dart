@@ -67,7 +67,7 @@ class _PostPageState extends State<PostPage> {
                               setState(() {
                                 description = value;
                               });
-                              debugPrint("description is: $description");
+                              ;
                             },
                             maxLines: 7,
                             decoration: const InputDecoration(
@@ -161,7 +161,7 @@ class _PostPageState extends State<PostPage> {
                                             mediaRemains &&
                                             mapSelected) {
                                           //save description, media and location to database
-                                          firestoreMethods()
+                                          FirestoreMethods()
                                               .validateAndSubmitPost(
                                                   description,
                                                   photoPath,

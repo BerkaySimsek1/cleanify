@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:cleanify/firebase_methods/firestore_methods.dart';
@@ -22,6 +24,10 @@ class _EditProfileState extends State<SignUpEditProfile> {
   bool ageRemains = false;
   late firebase_storage.UploadTask uploadTask;
   File? _selectedImage;
+  String? fullNameErrorMessage;
+  String? ageErrorMessage;
+  bool isFullNameTextFieldError = false;
+  bool isAgeTextFieldError = false;
 
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
@@ -40,7 +46,7 @@ class _EditProfileState extends State<SignUpEditProfile> {
           .child('/file');
       uploadTask = ref.putData(await _selectedImage!.readAsBytes());
       photoPath = await (await uploadTask).ref.getDownloadURL();
-      firestoreMethods().updateProfilePhoto(photoPath);
+      FirestoreMethods().updateProfilePhoto(photoPath);
 
       setState(() {});
     } catch (e) {
@@ -53,7 +59,7 @@ class _EditProfileState extends State<SignUpEditProfile> {
 
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
-      Future.delayed(Duration(microseconds: 1));
+      Future.delayed(const Duration(microseconds: 1));
       setState(() {});
       uploadFile();
     } else {
@@ -66,7 +72,7 @@ class _EditProfileState extends State<SignUpEditProfile> {
 
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
-      Future.delayed(Duration(microseconds: 1));
+      Future.delayed(const Duration(microseconds: 1));
       setState(() {});
       uploadFile();
     } else {
@@ -135,33 +141,70 @@ class _EditProfileState extends State<SignUpEditProfile> {
                       TextField(
                           controller: fullName,
                           maxLines: 1,
-                          decoration: const InputDecoration(
+                          onChanged: _validateFullNameTextField,
+                          decoration: InputDecoration(
                               isDense: true,
                               hintText: "Enter your full name",
                               labelText: "Full Name",
-                              border: OutlineInputBorder())),
+                              errorText: isFullNameTextFieldError
+                                  ? fullNameErrorMessage
+                                  : null,
+                              border: const OutlineInputBorder())),
                       const SizedBox(height: 20),
                       TextField(
                           controller: age,
                           maxLines: 1,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
+                          onChanged: _validateAgeTextField,
+                          decoration: InputDecoration(
                               isDense: true,
                               hintText: "Enter your age",
                               labelText: "Age",
-                              border: OutlineInputBorder())),
+                              errorText:
+                                  isAgeTextFieldError ? ageErrorMessage : null,
+                              border: const OutlineInputBorder())),
                       const SizedBox(height: 20),
                       ElevatedButton(
                           onPressed: () {
-                            firestoreMethods()
-                                .updateUserData(fullName.text, age.text);
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (context) {
-                              return const MainTabBar();
-                            }));
+                            if (!isAgeTextFieldError &&
+                                !isFullNameTextFieldError) {
+                              FirestoreMethods()
+                                  .updateUserData(fullName.text, age.text);
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(builder: (context) {
+                                return const MainTabBar();
+                              }));
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          "Something went wrong. Please try again.")));
+                            }
                           },
                           child: const Text("Continue",
                               style: ProjectTextStyles.styleListViewGeneral))
                     ]))));
+  }
+
+  void _validateFullNameTextField(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        fullNameErrorMessage = 'This field cannot be empty';
+        isFullNameTextFieldError = true;
+      } else {
+        isFullNameTextFieldError = false;
+      }
+    });
+  }
+
+  void _validateAgeTextField(String value) {
+    setState(() {
+      if (value.isEmpty) {
+        ageErrorMessage = 'This field cannot be empty';
+        isAgeTextFieldError = true;
+      } else {
+        isAgeTextFieldError = false;
+      }
+    });
   }
 }

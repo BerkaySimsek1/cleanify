@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostMapView extends StatefulWidget {
-  const PostMapView({super.key});
-
+  final double latitude;
+  final double longtitude;
+  const PostMapView(
+      {super.key, required this.latitude, required this.longtitude});
   @override
   State<PostMapView> createState() => _PostMapViewState();
 }
@@ -16,21 +18,30 @@ class PostMapView extends StatefulWidget {
 class _PostMapViewState extends State<PostMapView> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
+  late LatLng userPollutionLocation;
+  late CameraPosition firstPosition;
+  late Marker userPollutionMarker;
+  @override
+  void initState() {
+    super.initState();
+    userPollutionLocation = LatLng(
+        widget.latitude,
+        widget
+            .longtitude); //marker location that selected by user while posting (need instance from firebase)
 
-  static const fakeUserPollutionLocation = LatLng(39.93774183294341,
-      32.859935440843024); //marker location that selected by user while posting (need instance from firebase)
+    firstPosition = CameraPosition(
+        target: userPollutionLocation,
+        zoom:
+            15); // firstPosition coordinations must match with userPollutionLocation coordinations
 
-  static const CameraPosition firstPosition = CameraPosition(
-      target: fakeUserPollutionLocation,
-      zoom:
-          15); // firstPosition coordinations must match with fakeUserPollutionLocation coordinations
+    userPollutionMarker = Marker(
+        markerId: const MarkerId("pollution"),
+        position:
+            userPollutionLocation, //marker that selected by user while posting (need instance from firebase)
+        infoWindow: const InfoWindow(title: "Pollution"));
+  }
 
-  final Marker fakeUserPollutionMarker = const Marker(
-      markerId: MarkerId("pollution"),
-      position:
-          fakeUserPollutionLocation, //marker that selected by user while posting (need instance from firebase)
-      infoWindow:
-          InfoWindow(title: "Pollution")); //might add author username here
+  //might add author username here
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +61,6 @@ class _PostMapViewState extends State<PostMapView> {
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
-                    markers: {fakeUserPollutionMarker}))));
+                    markers: {userPollutionMarker}))));
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:cleanify/firebase_methods/auth_methods.dart';
 import 'package:cleanify/firebase_methods/firestore_methods.dart';
 import 'package:cleanify/pages/tabbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,7 +42,7 @@ class _EditProfileState extends State<AccountEditProfile> {
           .child('/file');
       uploadTask = ref.putData(await _selectedImage!.readAsBytes());
       photoPath = await (await uploadTask).ref.getDownloadURL();
-      firestoreMethods().updateProfilePhoto(photoPath);
+      FirestoreMethods().updateProfilePhoto(photoPath);
 
       setState(() {});
     } catch (e) {
@@ -79,89 +81,111 @@ class _EditProfileState extends State<AccountEditProfile> {
     return Scaffold(
         backgroundColor: ProjectColors.projectBackgroundColor,
         appBar: const CommonAppbar(preference: "back"),
-        body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Text("Complete Your Profile",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                          height: 150,
-                          child: _selectedImage != null
-                              ? Image.file(_selectedImage!,
-                                  fit: BoxFit.fitHeight)
-                              : Image.network(defaultPhoto,
-                                  fit: BoxFit.fitHeight)),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            ListTile(
-                                                title: const Text(
-                                                    "From Gallery",
-                                                    style: ProjectTextStyles
-                                                        .styleListViewGeneral),
-                                                onTap: () {
-                                                  imgFromGallery();
-                                                  setState(() {});
-                                                  Navigator.of(context).pop();
-                                                }),
-                                            ListTile(
-                                                title: const Text("Take Photo",
-                                                    style: ProjectTextStyles
-                                                        .styleListViewGeneral),
-                                                onTap: () {
-                                                  imgFromCamera();
-                                                  setState(() {});
-                                                  Navigator.of(context).pop();
-                                                })
-                                          ]));
-                                });
-                          },
-                          child: const Text("Change Profile Picture",
-                              style: ProjectTextStyles.styleListViewGeneral)),
-                      const SizedBox(height: 20),
-                      TextField(
-                          controller: fullName,
-                          maxLines: 1,
-                          decoration: const InputDecoration(
-                              isDense: true,
-                              hintText: "Enter your full name",
-                              labelText: "Full Name",
-                              border: OutlineInputBorder())),
-                      const SizedBox(height: 20),
-                      TextField(
-                          controller: age,
-                          maxLines: 1,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                              isDense: true,
-                              hintText: "Enter your age",
-                              labelText: "Age",
-                              border: OutlineInputBorder())),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                          onPressed: () {
-                            firestoreMethods()
-                                .updateUserData(fullName.text, age.text);
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (context) {
-                              return const MainTabBar();
-                            }));
-                          },
-                          child: const Text("Continue",
-                              style: ProjectTextStyles.styleListViewGeneral))
-                    ]))));
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection('users')
+                .doc(Auth().currentUser!.uid)
+                .snapshots(),
+            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (!snapshot.hasData || snapshot.data!.data() == null) {
+                return const Center(child: Text('User does not exist.'));
+              }
+
+              var userData = snapshot.data!.data() as Map<String, dynamic>;
+
+              return SingleChildScrollView(
+                  child: Padding(
+                      padding: const EdgeInsets.all(30),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text("Edit Your Profile",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                                height: 150,
+                                child: _selectedImage != null
+                                    ? Image.file(_selectedImage!,
+                                        fit: BoxFit.fitHeight)
+                                    : Image.network(userData["profilePhoto"],
+                                        fit: BoxFit.fitHeight)),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return Container(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  ListTile(
+                                                      title: const Text(
+                                                          "From Gallery",
+                                                          style: ProjectTextStyles
+                                                              .styleListViewGeneral),
+                                                      onTap: () {
+                                                        imgFromGallery();
+                                                        setState(() {});
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      }),
+                                                  ListTile(
+                                                      title: const Text(
+                                                          "Take Photo",
+                                                          style: ProjectTextStyles
+                                                              .styleListViewGeneral),
+                                                      onTap: () {
+                                                        imgFromCamera();
+                                                        setState(() {});
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      })
+                                                ]));
+                                      });
+                                },
+                                child: const Text("Change Profile Picture",
+                                    style: ProjectTextStyles
+                                        .styleListViewGeneral)),
+                            const SizedBox(height: 20),
+                            TextField(
+                                controller: fullName,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                    isDense: true,
+                                    hintText: "Enter your full name",
+                                    labelText: userData["name"],
+                                    border: const OutlineInputBorder())),
+                            const SizedBox(height: 20),
+                            TextField(
+                                controller: age,
+                                maxLines: 1,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                    isDense: true,
+                                    hintText: "Enter your age",
+                                    labelText: userData["age"],
+                                    border: const OutlineInputBorder())),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                                onPressed: () {
+                                  FirestoreMethods()
+                                      .updateUserData(fullName.text, age.text);
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(builder: (context) {
+                                    return const MainTabBar();
+                                  }));
+                                },
+                                child: const Text("Edit",
+                                    style:
+                                        ProjectTextStyles.styleListViewGeneral))
+                          ])));
+            }));
   }
 }

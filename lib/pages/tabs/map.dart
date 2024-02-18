@@ -1,5 +1,9 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'dart:async';
+import 'dart:math';
 import 'package:cleanify/elements/project_elements.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -14,52 +18,46 @@ class MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-//aim to view multiple markers at once(all down below)
+  Set<Marker> pollutionMarkers = {};
+
+  Future<void> _fetchAndSetPollutionLocations() async {
+    List<LatLng> pollutionLocations = [];
+    List<String> fullName = [];
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection("posts").get();
+    snapshot.docs.forEach((DocumentSnapshot document) {
+      Map<String, dynamic>? data = document.data() as Map<String, dynamic>;
+      double latitude = data['altitude'];
+      double longitude = data['longtitude'];
+      fullName.add(data["fullName"]);
+      pollutionLocations.add(LatLng(latitude, longitude));
+    });
+
+    List<LatLng> pollutions = pollutionLocations;
+
+    Set<Marker> markers = {};
+    for (int i = 0; i < pollutions.length; i++) {
+      markers.add(Marker(
+        markerId: MarkerId('pollution$i'),
+        position: pollutions[i],
+        infoWindow: InfoWindow(title: fullName[i]),
+      ));
+    }
+
+    setState(() {
+      pollutionMarkers = markers;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAndSetPollutionLocations();
+  }
 
   static const CameraPosition firstPosition = CameraPosition(
       target: LatLng(39.93327778, 32.85980556),
       zoom: 14); //might be any of markers(randomly)
-
-  static const CameraPosition _kPollution =
-      CameraPosition(target: fakePollutionLocation3, zoom: 16);
-
-  static const fakePollutionLocation1 =
-      LatLng(39.969288685174085, 32.84964733086899);
-  static const fakePollutionLocation2 =
-      LatLng(39.94697977379295, 32.86970575371591);
-  static const fakePollutionLocation3 =
-      LatLng(39.930394111555934, 32.840339174580635); //fake coordinates
-  static const fakePollutionLocation4 =
-      LatLng(39.913301649140536, 32.8721966695995);
-  static const fakePollutionLocation5 =
-      LatLng(39.96205415960526, 32.8908129836828); //fake coordinates
-  static const fakePollutionLocation6 =
-      LatLng(39.93158164476553, 32.85855004218636);
-
-  final Marker fakePollutionMarker1 = const Marker(
-      markerId: MarkerId("pollution"),
-      position: fakePollutionLocation1,
-      infoWindow: InfoWindow(title: "Pollution1"));
-  final Marker fakePollutionMarker2 = const Marker(
-      markerId: MarkerId("pollution"),
-      position: fakePollutionLocation2,
-      infoWindow: InfoWindow(title: "Pollution2")); //fake markers
-  final Marker fakePollutionMarker3 = const Marker(
-      markerId: MarkerId("pollution"),
-      position: fakePollutionLocation3,
-      infoWindow: InfoWindow(title: "Pollution3"));
-  final Marker fakePollutionMarker4 = const Marker(
-      markerId: MarkerId("pollution"),
-      position: fakePollutionLocation4,
-      infoWindow: InfoWindow(title: "Pollution4")); //fake markers
-  final Marker fakePollutionMarker5 = const Marker(
-      markerId: MarkerId("pollution"),
-      position: fakePollutionLocation5,
-      infoWindow: InfoWindow(title: "Pollution4"));
-  final Marker fakePollutionMarker6 = const Marker(
-      markerId: MarkerId("pollution"),
-      position: fakePollutionLocation6,
-      infoWindow: InfoWindow(title: "Pollution4"));
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +76,7 @@ class MapPageState extends State<MapPage> {
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);
                     },
-                    markers: {
-                      fakePollutionMarker1,
-                      fakePollutionMarker2,
-                      fakePollutionMarker3,
-                      fakePollutionMarker4,
-                      fakePollutionMarker5,
-                      fakePollutionMarker6
-                    })),
+                    markers: pollutionMarkers)),
             bottomNavigationBar: FloatingActionButton.extended(
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
                 onPressed: _goToThePollution,
@@ -94,8 +85,25 @@ class MapPageState extends State<MapPage> {
   }
 
   Future<void> _goToThePollution() async {
-    final GoogleMapController controller = await _controller
-        .future; //to navigate between camerapositions on the map
-    await controller.animateCamera(CameraUpdate.newCameraPosition(_kPollution));
+    final GoogleMapController controller = await _controller.future;
+    var randomPollution = Random().nextInt(pollutionMarkers
+        .length); //to navigate between camerapositions on the map
+    CameraPosition kPollution = CameraPosition(
+        target: pollutionMarkers.elementAt(randomPollution).position, zoom: 16);
+    await controller.animateCamera(CameraUpdate.newCameraPosition(kPollution));
+  }
+
+  Future<List<LatLng>> getPollutionLocationsFromFirestore() async {
+    List<LatLng> pollutionLocations = [];
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection("posts").get();
+    snapshot.docs.forEach((DocumentSnapshot document) {
+      Map<String, dynamic>? data = document.data() as Map<String, dynamic>;
+      double latitude = data['altitude'];
+      double longitude = data['longtitude'];
+      pollutionLocations.add(LatLng(latitude, longitude));
+    });
+
+    return pollutionLocations;
   }
 }

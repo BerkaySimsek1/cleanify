@@ -32,7 +32,8 @@ class Auth {
             profilePhoto:
                 'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg',
             name: "default",
-            age: "default");
+            age: "default",
+            count: 0);
         await _firestore
             .collection("users")
             .doc(cred.user!.uid)
@@ -49,5 +50,52 @@ class Auth {
 
   Future<void> logOut() async {
     await _auth.signOut();
+  }
+
+  Future deleteAccount() async {
+    _auth.currentUser!.delete();
+  }
+
+  Future<void> deletePosts() async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      CollectionReference koleksiyonRef = firestore.collection('posts');
+
+      QuerySnapshot querySnapshot = await koleksiyonRef.get();
+
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        if (data['uid'] == Auth().currentUser!.uid) {
+          print(data['uid']);
+          DocumentReference ref = _firestore.collection('posts').doc(doc.id);
+
+          ref.delete();
+        }
+      });
+    } catch (e) {
+      print('Hata: $e');
+    }
+  }
+
+  Future<void> deleteUserInfo() async {
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      CollectionReference koleksiyonRef = firestore.collection('users');
+
+      QuerySnapshot querySnapshot = await koleksiyonRef.get();
+
+      querySnapshot.docs.forEach((doc) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        if (data['uid'] == Auth().currentUser!.uid) {
+          DocumentReference ref = _firestore.collection('users').doc(doc.id);
+
+          ref.delete();
+        }
+      });
+    } catch (e) {
+      print('Hata: $e');
+    }
   }
 }

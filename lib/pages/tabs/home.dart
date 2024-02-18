@@ -1,3 +1,5 @@
+import 'package:cleanify/firebase_methods/auth_methods.dart';
+import 'package:cleanify/firebase_methods/firestore_methods.dart';
 import 'package:cleanify/pages/post.dart';
 import 'package:cleanify/pages/postmapview.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -39,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       return ListView(
                           scrollDirection: Axis.vertical,
                           children: snapshot.data!.docs.map((posts) {
+                            String id = posts.id;
                             return Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 5, vertical: 2.5),
@@ -132,24 +135,46 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                                                       child: Image.network(
                                                           posts["pollutionPhoto"],
                                                           fit: BoxFit.fill)))),
-                                          SizedBox(
-                                              width: 120,
-                                              child: TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) {
-                                                      return const PostMapView();
-                                                    }));
-                                                  },
-                                                  child: const Row(children: [
-                                                    Icon(Icons.location_on,
-                                                        color: Colors.grey),
-                                                    SizedBox(width: 10),
-                                                    Text('Location',
-                                                        style: TextStyle(
-                                                            color: Colors.grey))
-                                                  ])))
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                  width: 120,
+                                                  child: TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) {
+                                                          return PostMapView(
+                                                              latitude: posts[
+                                                                  "altitude"],
+                                                              longtitude: posts[
+                                                                  "longtitude"]);
+                                                        }));
+                                                      },
+                                                      child:
+                                                          const Row(children: [
+                                                        Icon(Icons.location_on,
+                                                            color: Colors.blue),
+                                                        SizedBox(width: 10),
+                                                        Text('Location',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .blue))
+                                                      ]))),
+                                              const Spacer(),
+                                              posts['uid'] ==
+                                                      Auth().currentUser!.uid
+                                                  ? IconButton(
+                                                      onPressed: () {
+                                                        FirestoreMethods()
+                                                            .deletePost(id);
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.delete))
+                                                  : const Text("")
+                                            ],
+                                          )
                                         ])));
                           }).toList());
                     }

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AppUser {
@@ -8,6 +10,7 @@ class AppUser {
   final String uid;
   final String name;
   final String age;
+  final int count;
 
   AppUser({
     required this.email,
@@ -17,6 +20,7 @@ class AppUser {
     required this.profilePhoto,
     required this.name,
     required this.age,
+    required this.count,
   });
 
   Map<String, dynamic> toJson() => {
@@ -26,7 +30,8 @@ class AppUser {
         'uid': uid,
         'profilePhoto': profilePhoto,
         'name': name,
-        'age': age
+        'age': age,
+        'count': count,
       };
 
   static AppUser fromSnap(DocumentSnapshot snap) {
@@ -38,6 +43,7 @@ class AppUser {
         uid: snapshot['uid'],
         profilePhoto: snapshot['profilePhoto'],
         name: snapshot['name'],
-        age: snapshot['age']);
+        age: snapshot['age'],
+        count: snapshot['count']);
   }
 }
