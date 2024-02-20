@@ -22,8 +22,10 @@ Cleanify is an application designed to allow users to draw attention to environm
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/d846c238-4bd0-4442-88c1-af6ed4922bba" alt="Screenshot_1708357821" width="25%">
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/4a249010-7688-4d46-a901-bcf4b8525314" alt="Screenshot_1708357768" width="25%">
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/01a2d093-e692-4c90-bd04-b544cb407788" alt="Screenshot_1708357775" width="25%">
+<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/27d2a866-bc26-4fc8-891f-6e152e4d6b03" alt="Screenshot_1708357775" width="25%">
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/4d6fe0c5-bc37-485b-ba7b-791f9eb9a202" alt="Screenshot_1708357811" width="25%">
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/1c392efd-c53e-4331-9e82-a4235622e536" alt="Screenshot_1708357782" width="25%">
+<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/0f6e2559-e98d-407a-b107-a28044ccbb3b" alt="Screenshot_1708357782" width="25%">
 
 
 ## Installation
