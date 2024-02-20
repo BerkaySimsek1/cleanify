@@ -32,7 +32,7 @@ Cleanify is an application designed to allow users to draw attention to environm
 
 
 
-You can download the apk file for your mobile version [here]([https://link-url-here.org](https://drive.google.com/file/d/1Cs3N_cCFnfAVB9pOn3bSSOjGhnO4YNqW/view?usp=drive_link))
+You can download the apk file for your mobile version [here.](https://drive.google.com/file/d/1Cs3N_cCFnfAVB9pOn3bSSOjGhnO4YNqW/view?usp=drive_link)
 
 ## Contributors
 
