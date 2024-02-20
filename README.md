@@ -33,8 +33,8 @@ Cleanify is an application designed to allow users to draw attention to environm
 You can download the apk file for your mobile version [here.](https://drive.google.com/file/d/1Cs3N_cCFnfAVB9pOn3bSSOjGhnO4YNqW/view?usp=drive_link)
 
 ## Technologies
-<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/14be2fca-bf70-46d3-bb26-d07149d6ffa5" alt="Screenshot_1708357782" width="5%" height="5%">
-<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/d4474caf-f98a-453f-8926-d21e6f582b61" alt="Screenshot_1708357782" width="5%" height="5%">
+<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/14be2fca-bf70-46d3-bb26-d07149d6ffa5" alt="Screenshot_1708357782" width="25%" height="5%">
+<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/d4474caf-f98a-453f-8926-d21e6f582b61" alt="Screenshot_1708357782" width="25%" height="5%">
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/a15b3c80-ec22-4fe2-b4c4-bf0fff8174f8" alt="Screenshot_1708357782" width="5%" height="5%">
 
 
