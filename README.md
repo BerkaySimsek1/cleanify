@@ -1,7 +1,8 @@
 
 # Cleanify
 
-Cleanify is an application designed to allow users to draw attention to environmental issues by sharing with each other the garbage and pollution they encounter in their environment. Cleanify is an innovative app designed to help users identify and avoid polluted areas around them. It is an application developed by developers to solve the problems of soil and climate change. Developed using Flutter and Firebase, Cleanify uses real-time data and Google Maps integration to provide users with the information they need to make healthier choices about their environment.
+Cleanify is an application designed to allow users to draw attention to environmental issues by sharing with each other the garbage and pollution they encounter in their environment. Cleanify is an innovative app designed to help users identify and avoid polluted areas around them. It is an application developed by developers to solve the problems of soil and climate change. 
+Developed using Flutter and Firebase, Cleanify uses real-time database and Google Maps integration to provide users with the information they need to make healthier choices about their environment.
 
 ## Features
 
@@ -12,7 +13,10 @@ Cleanify is an application designed to allow users to draw attention to environm
 - **View**: Users can view for specific pollution locations.
 - **Settings**: Users can customize their app experience through settings.
 
-## Screenshots
+## Solved SDG's
+
+![E_SDG_Icons-15](https://github.com/axeonthe4th/cleanify/assets/108281186/df719a7d-0ae4-4fca-a9b8-b8cf7e28f7d5)
+![E_SDG_Icons-13](https://github.com/axeonthe4th/cleanify/assets/108281186/14c558fb-5c96-454d-808b-747982c94b56)
 
 
 ## Screenshots
