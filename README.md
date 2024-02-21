@@ -1,5 +1,5 @@
 
-![icon - Kopya](https://github.com/axeonthe4th/cleanify/assets/108281186/f372bc4d-de84-4a0f-b98a-0f3d85e06b5d)
+<img src="https://github.com/axeonthe4th/cleanify/assets/108281186/f372bc4d-de84-4a0f-b98a-0f3d85e06b5d" alt="Screenshot_1708357816" width="25%">
 
 # Cleanify
 
