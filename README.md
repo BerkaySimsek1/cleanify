@@ -20,6 +20,10 @@ Developed using Flutter and Firebase, Cleanify uses real-time database and Googl
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/14c558fb-5c96-454d-808b-747982c94b56" alt="Screenshot_1708357816" width="25%">
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/df719a7d-0ae4-4fca-a9b8-b8cf7e28f7d5" alt="Screenshot_1708357816" width="25%">
 
+## Demo
+
+You can watch our demo video [here.](https://www.youtube.com/watch?v=gSNYFNRTVJc)
+
 ## Screenshots
 
 <img src="https://github.com/axeonthe4th/cleanify/assets/108281186/eab72c08-7865-40fa-bf48-29cac7c97f9e" alt="Screenshot_1708357816" width="25%">
