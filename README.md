@@ -1,4 +1,6 @@
 
+![icon - Kopya](https://github.com/axeonthe4th/cleanify/assets/108281186/f372bc4d-de84-4a0f-b98a-0f3d85e06b5d)
+
 # Cleanify
 
 Cleanify is an application designed to allow users to draw attention to environmental issues by sharing with each other the garbage and pollution they encounter in their environment. Cleanify is an innovative app designed to help users identify and avoid polluted areas around them. It is an application developed by developers to solve the problems of soil and climate change. 
